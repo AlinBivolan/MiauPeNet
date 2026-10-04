@@ -1,0 +1,173 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+
+export default function Lessons() {
+  const [roadmap, setRoadmap] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    loadRoadmap();
+  }, []);
+
+  const loadRoadmap = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get("http://localhost:5000/api/lessons/roadmap", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      setRoadmap(res.data || []);
+    } catch (err) {
+      console.error("Lessons roadmap error:", err);
+      setError(
+        err?.response?.data?.message || "Nu s-a putut încărca roadmap-ul."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div style={{ padding: "24px", color: "white" }}>Se încarcă...</div>;
+  }
+
+  if (error) {
+    return <div style={{ padding: "24px", color: "white" }}>Eroare: {error}</div>;
+  }
+
+  return (
+    <div style={{ padding: "24px", color: "white", maxWidth: "900px", margin: "0 auto" }}>
+      <h1>Traseul tău de învățare</h1>
+
+      {roadmap.map((chapter) => (
+        <section key={chapter._id} style={{ marginBottom: "40px" }}>
+          <div
+            style={{
+              background: chapter.isUnlocked ? "#0f172a" : "#1f2937",
+              border: `2px solid ${chapter.color || "#72d6f5"}`,
+              borderRadius: "18px",
+              padding: "16px 20px",
+              marginBottom: "20px"
+            }}
+          >
+            <h2 style={{ margin: 0 }}>{chapter.name}</h2>
+            <p style={{ margin: "8px 0 0", color: "#cbd5e1" }}>
+              {chapter.isUnlocked ? "Capitol disponibil" : "Capitol blocat"}
+            </p>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {chapter.lessons.map((lesson, idx) => {
+              const alignRight = idx % 2 === 1;
+              const status = lesson.progress?.status || "not_started";
+
+              let badgeBg = "#475569";
+              let badgeText = "Blocată";
+
+              if (lesson.isUnlocked && status === "completed") {
+                badgeBg = "#22c55e";
+                badgeText = "Completată";
+              } else if (lesson.isUnlocked && status === "in_progress") {
+                badgeBg = "#3b82f6";
+                badgeText = `Nivel ${lesson.progress.currentLevel}`;
+              } else if (lesson.isUnlocked) {
+                badgeBg = "#f59e0b";
+                badgeText = "Disponibilă";
+              }
+
+              return (
+                <div
+                  key={lesson._id}
+                  style={{
+                    display: "flex",
+                    justifyContent: alignRight ? "flex-end" : "flex-start"
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "100%",
+                      maxWidth: "430px",
+                      background: "#ffffff",
+                      color: "#0f172a",
+                      borderRadius: "20px",
+                      padding: "18px",
+                      border: "1px solid #e2e8f0",
+                      opacity: lesson.isUnlocked ? 1 : 0.65
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "inline-block",
+                        padding: "6px 10px",
+                        borderRadius: "999px",
+                        background: badgeBg,
+                        color: "white",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        marginBottom: "12px"
+                      }}
+                    >
+                      {badgeText}
+                    </div>
+
+                    <h3 style={{ marginTop: 0 }}>
+                      Lecția {lesson.index} · {lesson.title}
+                    </h3>
+
+                    <p style={{ color: "#475569" }}>{lesson.description}</p>
+
+                    <div style={{ marginBottom: "12px", color: "#334155" }}>
+                      {lesson.levelsCount} nivele
+                    </div>
+
+                    {lesson.isUnlocked ? (
+                      <Link
+                        to={`/app/lesson/${chapter._id}/${lesson.index}`}
+                        style={{
+                          display: "inline-block",
+                          textDecoration: "none",
+                          background: "#72d6f5",
+                          color: "#001018",
+                          padding: "10px 14px",
+                          borderRadius: "12px",
+                          fontWeight: 800
+                        }}
+                      >
+                        {status === "completed"
+                          ? "Reia lecția"
+                          : status === "in_progress"
+                          ? "Continuă"
+                          : "Începe"}
+                      </Link>
+                    ) : (
+                      <div
+                        style={{
+                          display: "inline-block",
+                          background: "#e5e7eb",
+                          color: "#475569",
+                          padding: "10px 14px",
+                          borderRadius: "12px",
+                          fontWeight: 700
+                        }}
+                      >
+                        🔒 Blocat
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}

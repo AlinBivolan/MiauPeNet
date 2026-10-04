@@ -1,0 +1,56 @@
+Structura de categorii (capitole) + subcategorii (skill-uri)
+A. Identitate & Conturi
+
+Skill-uri: parole, 2FA, recovery, sesiuni, device safety
+Scenarii:
+
+“Link de la prieten” (account takeover + MFA fatigue)
+
+“Recuperare cont” (cod SMS interceptat / SIM swap – nivel 5)
+
+B. Social Engineering & Manipulare
+
+Skill-uri: verificare pe alt canal, presiune/urgență, impersonare
+Scenarii:
+
+“Mod Discord/Steam verificare”
+
+“Profesor fals / admin școală cere date”
+
+C. Fraudă & Scam financiar
+
+Skill-uri: red flags, verificare firmă, metode de plată, chargeback
+Scenarii:
+
+“Internship fake + CI/Revolut”
+
+“Marketplace scam / escrow fake”
+
+D. Intimitate, Sextortion & Hărțuire
+
+Skill-uri: boundaries, raportare, dovezi, suport adult, privacy
+Scenarii:
+
+“Sextortion”
+
+“Cyberbullying escaladare + grup”
+
+E. Informație & Deepfakes
+
+Skill-uri: lateral reading, surse, reverse search, context
+Scenarii:
+
+“Deepfake clip”
+
+“Știre falsă cu conturi clonate”
+
+F. Privacy & Urme digitale (OSINT)
+
+Skill-uri: setări, geotag, date sensibile, doxxing prevention
+Scenarii:
+
+“Selfie cu uniformă + locație”
+
+“Conturi clonate + scraping”
+
+

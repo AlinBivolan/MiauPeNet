@@ -1,0 +1,600 @@
+.gamesPage {
+  min-height: 100vh;
+  padding: 30px;
+  color: #fff;
+  font-family: "LilitaV2";
+  background:
+    radial-gradient(circle at top left, rgba(244, 164, 234, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(82, 208, 255, 0.14), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(255, 209, 102, 0.12), transparent 22%),
+    linear-gradient(180deg, #0a1020 0%, #111a30 100%);
+  box-sizing: border-box;
+}
+
+.header {
+  width: min(100%, 1150px);
+  margin: 0 auto 30px;
+  padding: 10px 0 24px;
+  border-bottom: 3px solid rgba(244, 164, 234, 0.18);
+
+  h1 {
+    margin: 0 0 10px;
+    font-size: 46px;
+    color: #f4a4ea;
+    line-height: 1.05;
+    text-shadow:
+      -2px -2px 0 #244a87,
+       2px -2px 0 #244a87,
+      -2px  2px 0 #244a87,
+       2px  2px 0 #244a87,
+      -4px  4px 0 #08111f;
+  }
+
+  p {
+    max-width: 780px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.88);
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #ffd166;
+  font-family: sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.errorBox {
+  width: min(100%, 1150px);
+  margin: 0 auto 22px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 84, 112, 0.14);
+  border: 3px solid rgba(255, 84, 112, 0.35);
+  color: #ffd2da;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+  font-family: sans-serif;
+}
+
+.cardsGrid {
+  width: min(100%, 1150px);
+  margin: 0 auto 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.gameCard,
+.completedCard {
+  position: relative;
+  min-height: 168px;
+  border-radius: 30px;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  cursor: pointer;
+  font-family: "LilitaV2";
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  box-shadow:
+    0 18px 0 rgba(8, 17, 31, 0.72),
+    0 22px 38px rgba(0, 0, 0, 0.24);
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow:
+      0 12px 0 rgba(8, 17, 31, 0.72),
+      0 18px 28px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.gameCard {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.08), transparent 35%),
+    linear-gradient(180deg, #1d2a47 0%, #131f38 100%);
+  border: 3px solid #3c5d96;
+}
+
+.completedCard {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 32%),
+    linear-gradient(180deg, #225c57 0%, #173e49 100%);
+  border: 3px solid #69d5b4;
+}
+
+.cardIcon {
+  width: 70px;
+  height: 70px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  background: linear-gradient(180deg, #f7c5f1 0%, #f4a4ea 100%);
+  border: 3px solid #ffdcfb;
+  box-shadow:
+    0 8px 0 rgba(135, 48, 127, 0.45),
+    0 10px 18px rgba(0, 0, 0, 0.16);
+}
+
+.completedCard .cardIcon {
+  background: linear-gradient(180deg, #b8ffe4 0%, #74e0bb 100%);
+  border: 3px solid #e8fff6;
+  box-shadow:
+    0 8px 0 rgba(30, 108, 86, 0.45),
+    0 10px 18px rgba(0, 0, 0, 0.16);
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  h2 {
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.08;
+    color: #fff;
+    text-shadow:
+      -1px -1px 0 rgba(32, 54, 93, 0.85),
+       1px -1px 0 rgba(32, 54, 93, 0.85),
+      -1px  1px 0 rgba(32, 54, 93, 0.85),
+       1px  1px 0 rgba(32, 54, 93, 0.85);
+  }
+
+  p {
+    display: none;
+  }
+}
+
+.status {
+  display: none;
+}
+
+.unsolvedBadge,
+.solvedBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-family: sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15);
+}
+
+.unsolvedBadge {
+  background: #f7c5f1;
+  border: 3px solid #ffd8fb;
+  color: #7e2974;
+}
+
+.solvedBadge {
+  background: #b8ffe4;
+  border: 3px solid #e8fff6;
+  color: #146b52;
+}
+
+.cardMeta {
+  display: none;
+}
+
+.playArea {
+  width: min(100%, 1150px);
+  margin: 0 auto;
+}
+
+.emptyState,
+.gamePanel {
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at top right, rgba(244, 164, 234, 0.14), transparent 28%),
+    linear-gradient(180deg, #1a2542 0%, #121a31 100%);
+  border: 3px solid #355286;
+  box-shadow:
+    0 18px 0 rgba(8, 17, 31, 0.72),
+    0 24px 44px rgba(0, 0, 0, 0.22);
+  box-sizing: border-box;
+}
+
+.emptyState {
+  padding: 36px;
+  text-align: center;
+
+  h2 {
+    margin: 0 0 10px;
+    color: #f4a4ea;
+    font-size: 34px;
+    text-shadow:
+      -2px -2px 0 #244a87,
+       2px -2px 0 #244a87,
+      -2px  2px 0 #244a87,
+       2px  2px 0 #244a87,
+      -4px  4px 0 #08111f;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-family: sans-serif;
+    line-height: 1.6;
+  }
+}
+
+.gamePanel {
+  padding: 34px;
+}
+
+.gamePanelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 24px;
+
+  h2 {
+    margin: 10px 0 5px;
+    color: #f4a4ea;
+    font-size: 40px;
+    line-height: 1.05;
+    text-shadow:
+      -2px -2px 0 #244a87,
+       2px -2px 0 #244a87,
+      -2px  2px 0 #244a87,
+       2px  2px 0 #244a87,
+      -4px  4px 0 #08111f;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.84);
+    font-family: sans-serif;
+    line-height: 1.5;
+  }
+}
+
+.bigIcon {
+  flex: 0 0 82px;
+  width: 82px;
+  height: 82px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #f7c5f1 0%, #f4a4ea 100%);
+  border: 3px solid #ffdcfb;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  box-shadow:
+    0 8px 0 rgba(135, 48, 127, 0.45),
+    0 10px 18px rgba(0, 0, 0, 0.16);
+}
+
+.infoBlock {
+  margin-bottom: 18px;
+  padding: 20px 22px;
+  border-radius: 24px;
+  background: #0d162b;
+  border: 3px solid #253d68;
+
+  h3 {
+    margin: 0 0 10px;
+    color: #ffd166;
+    font-size: 22px;
+    text-shadow:
+      -1px -1px 0 #70550d,
+       1px -1px 0 #70550d,
+      -1px  1px 0 #70550d,
+       1px  1px 0 #70550d;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+}
+
+.encodedBox {
+  margin: 22px 0;
+  padding: 24px;
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(244, 164, 234, 0.18), rgba(82, 208, 255, 0.14)),
+    #0b1224;
+  border: 3px solid #496ba5;
+  color: white;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.03);
+
+  span {
+    display: block;
+    margin-bottom: 12px;
+    color: #ffd166;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  strong {
+    display: block;
+    word-break: break-word;
+    color: white;
+    font-family: "Courier New", monospace;
+    font-size: 26px;
+    line-height: 1.45;
+    letter-spacing: 0.06em;
+  }
+}
+
+.helperTable {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+
+  div {
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: #0d162b;
+    border: 3px solid #253d68;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-family: sans-serif;
+  }
+
+  strong {
+    color: #fff;
+    font-weight: 800;
+  }
+
+  span {
+    color: #f4a4ea;
+    font-weight: 900;
+  }
+}
+
+.hintBox {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: rgba(255, 209, 102, 0.12);
+  border: 3px solid rgba(255, 209, 102, 0.38);
+  color: #fff8e5;
+  font-family: sans-serif;
+  line-height: 1.5;
+
+  strong {
+    color: #ffd166;
+  }
+}
+
+.answerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 4px;
+
+  label {
+    color: #f4a4ea;
+    font-size: 24px;
+    text-shadow:
+      -1px -1px 0 #244a87,
+       1px -1px 0 #244a87,
+      -1px  1px 0 #244a87,
+       1px  1px 0 #244a87,
+      -3px  3px 0 #08111f;
+  }
+
+  p {
+    margin: 0 0 6px;
+    color: rgba(255, 255, 255, 0.88);
+    font-family: sans-serif;
+    line-height: 1.5;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 18px;
+    border-radius: 22px;
+    border: 3px solid #44649d;
+    background: #0d162b;
+    color: white;
+    font-family: sans-serif;
+    font-size: 16px;
+    outline: none;
+    box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.12);
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    &:focus {
+      border-color: #f4a4ea;
+      box-shadow:
+        inset 0 4px 0 rgba(0, 0, 0, 0.12),
+        0 0 0 4px rgba(244, 164, 234, 0.14);
+    }
+  }
+
+  button {
+    width: fit-content;
+    min-width: 240px;
+    margin-top: 8px;
+    border: 3px solid #ffd8fb;
+    border-radius: 24px;
+    padding: 15px 26px;
+    background: linear-gradient(180deg, #f7c5f1 0%, #f4a4ea 100%);
+    color: #ff13f0;
+    cursor: pointer;
+    font-family: "LilitaV2";
+    font-size: 23px;
+    text-shadow:
+      -1px -1px 0 #2b5a98,
+       1px -1px 0 #2b5a98,
+      -1px  1px 0 #2b5a98,
+       1px  1px 0 #2b5a98,
+      -3px  3px 0 #01192c;
+    box-shadow:
+      0 8px 0 rgba(135, 48, 127, 0.45),
+      0 14px 24px rgba(0, 0, 0, 0.18);
+    transition: 0.2s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+      box-shadow:
+        0 5px 0 rgba(135, 48, 127, 0.45),
+        0 10px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.successFeedback,
+.failFeedback {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  font-family: sans-serif;
+  line-height: 1.5;
+  border: 3px solid transparent;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+
+  strong {
+    display: block;
+    margin-bottom: 6px;
+    font-family: "LilitaV2";
+    font-size: 22px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 15px;
+  }
+}
+
+.successFeedback {
+  background: rgba(116, 224, 187, 0.14);
+  border-color: rgba(116, 224, 187, 0.42);
+  color: #cffff0;
+}
+
+.failFeedback {
+  background: rgba(255, 84, 112, 0.14);
+  border-color: rgba(255, 84, 112, 0.38);
+  color: #ffd2da;
+}
+
+@media (min-width: 1400px) {
+  .header,
+  .cardsGrid,
+  .playArea,
+  .errorBox {
+    width: min(100%, 1450px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .cardsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .header h1 {
+    font-size: 38px;
+  }
+
+  .gamePanelHeader {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 800px) {
+  .gamesPage {
+    padding: 18px;
+  }
+
+  .gamePanel,
+  .emptyState {
+    padding: 24px;
+    border-radius: 26px;
+  }
+
+  .gamePanelHeader {
+    flex-direction: column;
+  }
+
+  .bigIcon {
+    width: 70px;
+    height: 70px;
+    flex-basis: 70px;
+    font-size: 36px;
+  }
+
+  .gamePanelHeader h2 {
+    font-size: 32px;
+  }
+
+  .encodedBox strong {
+    font-size: 20px;
+  }
+
+  .answerForm button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 32px;
+  }
+
+  .cardContent h2 {
+    font-size: 22px;
+  }
+
+  .gameCard,
+  .completedCard {
+    min-height: 142px;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .cardIcon {
+    width: 58px;
+    height: 58px;
+    font-size: 30px;
+    border-radius: 20px;
+  }
+}

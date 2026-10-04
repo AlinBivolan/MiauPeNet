@@ -1,0 +1,173 @@
+.page {
+  color: white;
+}
+
+.header {
+  margin-bottom: 22px;
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 32px;
+  }
+
+  p {
+    margin: 0;
+    opacity: 0.75;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.tab,
+.activeTab {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.tab {
+  background: #111827;
+  color: white;
+}
+
+.activeTab {
+  background: #2e7b87;
+  color: white;
+}
+
+.empty {
+  background: #111827;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.card {
+  background: #111827;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  h3 {
+    margin: 0 0 8px;
+    font-size: 24px;
+  }
+
+  p {
+    margin: 4px 0;
+    opacity: 0.85;
+  }
+}
+
+.statusBox {
+  background: #0b1220;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  span {
+    font-weight: 800;
+    color: #9de7f2;
+  }
+
+  small {
+    opacity: 0.8;
+  }
+}
+
+.flags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+
+  span {
+    background: #5c1f1f;
+    color: white;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+.reason {
+  margin-top: 14px;
+  background: rgba(255, 183, 3, 0.1);
+  border: 1px solid rgba(255, 183, 3, 0.25);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.storyBody {
+  margin-top: 18px;
+}
+
+.storyText {
+  line-height: 1.6;
+  margin: 12px 0;
+}
+
+.storyImage {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 16px;
+  display: block;
+  margin: 12px 0;
+}
+
+.actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.approveBtn,
+.rejectBtn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.approveBtn {
+  background: #2e7b87;
+  color: white;
+}
+
+.rejectBtn {
+  background: #5c1f1f;
+  color: white;
+}
+
+.reasonInput {
+  flex: 1;
+  min-width: 220px;
+  background: #0b1220;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px 12px;
+}

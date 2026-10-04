@@ -1,0 +1,140 @@
+.page {
+  color: white;
+}
+
+.header {
+  margin-bottom: 22px;
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 32px;
+  }
+
+  p {
+    margin: 0;
+    opacity: 0.75;
+    max-width: 760px;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.tab,
+.activeTab {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.tab {
+  background: #111827;
+  color: white;
+}
+
+.activeTab {
+  background: #5c1f1f;
+  color: white;
+}
+
+.empty {
+  background: #111827;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.card {
+  background: #111827;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255, 77, 77, 0.18);
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  h3 {
+    margin: 0 0 8px;
+    font-size: 26px;
+  }
+
+  p {
+    margin: 4px 0;
+    opacity: 0.82;
+  }
+}
+
+.highRisk,
+.mediumRisk {
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 900;
+}
+
+.highRisk {
+  background: rgba(255, 77, 77, 0.16);
+  color: #ff6b6b;
+}
+
+.mediumRisk {
+  background: rgba(255, 193, 7, 0.16);
+  color: #ffd54f;
+}
+
+.titleBox,
+.textBox {
+  margin-top: 16px;
+  background: #0b1220;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.textBox p {
+  margin: 8px 0 0;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.flags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+
+  span {
+    background: #5c1f1f;
+    color: white;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+
+.actions {
+  margin-top: 18px;
+}
+
+.reviewBtn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 900;
+  background: #2e7b87;
+  color: white;
+}

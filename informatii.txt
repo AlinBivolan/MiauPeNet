@@ -1,0 +1,481 @@
+Cautam ce chestii mai putem da pe langa grila la lectii
+
+Ne gandim e punem la aia cu jocuri (TikTok)
+
+
+
+Opțiunea asta este un sistem de alerte de siguranță pentru admin, separat de poveștile publicate.
+
+Ideea principală este:
+
+adminul poate vedea texte riscante chiar dacă utilizatorul nu apasă pe „Trimite spre verificare”.
+
+Cum funcționează, pas cu pas
+
+Când utilizatorul deschide modalul de „Adaugă poveste” și începe să scrie, aplicația adună tot textul din poveste:
+
+title + toate blocurile de tip text
+
+De exemplu, dacă userul scrie:
+
+Titlu: Azi nu mă simt bine
+
+Bloc text 1: Mă simt singur.
+Bloc imagine
+Bloc text 2: Nu mai pot.
+
+frontend-ul construiește mental un text complet:
+
+Azi nu mă simt bine Mă simt singur. Nu mai pot.
+
+Acel text este analizat live de funcția:
+
+analyzeText(fullText)
+
+Asta e partea de frontend, care decide rapid dacă textul pare:
+
+none
+medium
+high
+
+și afișează mesajul galben sau roșu în modal.
+
+Ce face frontend-ul în plus
+
+Pe lângă analiza locală, mai există un useEffect care trimite draftul la backend:
+
+fetch("http://localhost:5000/api/safety/draft-check", ...)
+
+Asta se întâmplă automat după ce userul scrie ceva, cu o mică întârziere de aproximativ 1.2 secunde.
+
+De ce există întârzierea?
+
+Ca să nu trimită request la backend la fiecare literă. Dacă utilizatorul scrie continuu, timerul se resetează. Backend-ul primește textul doar când userul se oprește puțin din tastat.
+
+Asta se numește, practic, un mic debounce.
+
+Ce trimite frontend-ul la backend
+
+Frontend-ul trimite ceva de forma:
+
+{
+  title: formData.title,
+  blocks: formData.blocks
+}
+
+Adică backend-ul primește povestea în starea în care este în acel moment.
+
+Inclusiv dacă userul nu a postat-o.
+
+Exemplu:
+
+{
+  "title": "Nu mă simt bine",
+  "blocks": [
+    {
+      "type": "text",
+      "content": "Mă simt singur.",
+      "order": 0
+    },
+    {
+      "type": "image",
+      "imageUrl": "/uploads/stories/abc.jpg",
+      "order": 1
+    },
+    {
+      "type": "text",
+      "content": "Nu mai pot.",
+      "order": 2
+    }
+  ]
+}
+
+Backend-ul ignoră imaginile pentru analiză și citește doar blocurile de text.
+
+Ce face backend-ul
+
+Endpoint-ul:
+
+POST /api/safety/draft-check
+
+apelează controllerul:
+
+checkDraftSafety
+
+Acesta face trei lucruri:
+
+primește title și blocks
+rulează analiza de siguranță pe text
+dacă riscul este medium sau high, creează o alertă în baza de date
+
+Modelul folosit este:
+
+SafetyAlert
+
+Acolo se salvează:
+
+user
+title
+textPreview
+blocksSnapshot
+riskLevel
+flags
+source
+status
+Ce înseamnă fiecare câmp din alertă
+user
+
+Userul care scria textul.
+
+user: req.userId
+
+Asta permite adminului să vadă cine a generat alerta.
+
+title
+
+Titlul draftului în momentul în care a fost detectat riscul.
+
+textPreview
+
+O bucată din textul complet detectat.
+
+De exemplu:
+
+Nu mă simt bine. Mă simt singur. Nu mai pot.
+
+De obicei este limitat la un număr de caractere, ca să nu salvezi texte uriașe.
+
+blocksSnapshot
+
+O copie a blocurilor din acel moment.
+
+Asta e important pentru că utilizatorul poate:
+
+să șteargă textul
+să închidă modalul
+să nu posteze
+să schimbe povestea
+
+Dar adminul tot vede ce a declanșat alerta.
+
+riskLevel
+
+Nivelul de risc detectat:
+
+"medium"
+
+sau
+
+"high"
+flags
+
+Motivele detectate.
+
+Exemple:
+
+["medium_risk_distress_language"]
+
+sau:
+
+["high_risk_self_harm_language"]
+source
+
+De unde a venit alerta.
+
+Pentru varianta asta:
+
+source: "draft"
+
+Adică alerta a venit dintr-un draft, nu neapărat dintr-o poveste postată.
+
+status
+
+Starea alertei pentru admin:
+
+"new"
+
+sau:
+
+"reviewed"
+
+Inițial este new.
+
+După ce adminul o verifică, devine reviewed.
+
+Ce vede adminul
+
+În admin există pagina:
+
+/admin/safety-alerts
+
+Acolo adminul vede alertele din backend prin endpoint-ul:
+
+GET /api/safety/alerts?status=new
+
+Adminul poate comuta între:
+
+alerte noi
+alerte verificate
+
+Fiecare card de alertă arată:
+
+nivelul de risc
+userul
+emailul userului
+data detectării
+titlul
+textul detectat
+flagurile
+butonul „Marchează ca verificată”
+Ce se întâmplă dacă adminul apasă „Marchează ca verificată”
+
+Frontend-ul trimite:
+
+PUT /api/safety/alerts/:id/reviewed
+
+Backend-ul schimbă alerta:
+
+status = "reviewed"
+reviewedBy = req.userId
+reviewedAt = new Date()
+
+Apoi alerta dispare din tabul „Noi” și poate fi văzută în tabul „Verificate”.
+
+Diferența dintre Safety Alert și Story Review
+
+Sunt două lucruri diferite.
+
+Story Review
+
+Apare când userul chiar trimite povestea.
+
+Adică:
+
+Trimite spre verificare
+
+Atunci povestea ajunge în Story cu status:
+
+pending
+
+sau:
+
+flagged
+
+Adminul o vede în:
+
+/admin/stories-review
+Safety Alert
+
+Apare chiar în timp ce userul scrie.
+
+Userul poate să:
+
+nu posteze
+închidă modalul
+șteargă textul
+plece de pe pagină
+
+Dar alerta poate fi deja salvată în:
+
+SafetyAlert
+
+Adminul o vede în:
+
+/admin/safety-alerts
+Exemplu complet de flow
+
+Să zicem că un utilizator scrie în modal:
+
+Nu mai pot. Vreau să dispar.
+1. Frontend-ul detectează local
+
+analyzeText vede expresii sensibile și setează:
+
+safety = {
+  risk: "high",
+  flags: ["suicide"]
+}
+
+În modal apare mesaj roșu de suport.
+
+2. Frontend-ul trimite draftul la backend
+
+După aproximativ 1.2 secunde:
+
+POST /api/safety/draft-check
+
+cu:
+
+{
+  "title": "...",
+  "blocks": [...]
+}
+3. Backend-ul verifică din nou
+
+Backend-ul rulează:
+
+analyzeStorySafety(...)
+
+Important: backend-ul nu se bazează doar pe frontend.
+
+Asta e bine, pentru că frontend-ul poate fi modificat de oricine în browser.
+
+4. Backend-ul creează alerta
+
+Dacă riscul este medium sau high, creează:
+
+SafetyAlert.create(...)
+5. Adminul vede alerta
+
+În /admin/safety-alerts, apare cardul cu textul detectat.
+
+6. Adminul verifică
+
+Adminul poate lua măsurile potrivite în afara aplicației sau poate marca alerta ca verificată.
+
+Ce se întâmplă dacă userul postează totuși povestea
+
+Atunci se întâmplă și partea de Story Review.
+
+Povestea ajunge în Story cu:
+
+status: "flagged"
+
+dacă este risc.
+
+Adminul o vede în:
+
+/admin/stories-review
+
+Deci aceeași situație poate produce:
+
+o alertă de draft
+o poveste flag-uită
+
+Asta este intenționat.
+
+Alerta arată că riscul a fost observat în timp ce scria. Povestea flag-uită este obiectul care poate fi aprobat sau respins.
+
+Ce se întâmplă dacă userul șterge povestea
+
+Dacă povestea a fost deja creată și apoi o șterge, povestea dispare.
+
+Dar dacă a existat o alertă de siguranță creată în timpul scrierii, alerta rămâne în SafetyAlert.
+
+Asta răspunde exact la întrebarea ta anterioară: adminul poate vedea semnale de risc chiar dacă postarea nu mai există.
+
+Ce se întâmplă dacă userul scrie ceva riscant, apoi șterge textul înainte să posteze
+
+Tot poate exista alertă.
+
+Pentru că alerta se salvează în momentul în care backend-ul primește draftul riscant.
+
+Chiar dacă userul șterge după, snapshot-ul rămâne în admin.
+
+De ce avem și frontend detection și backend detection
+
+Frontend detection:
+
+oferă feedback imediat userului
+afișează mesaj de suport
+nu așteaptă serverul
+
+Backend detection:
+
+salvează alerta pentru admin
+nu poate fi ocolit ușor
+creează audit trail
+
+Ambele sunt necesare.
+
+Limitări importante
+
+Sistemul actual e bazat pe expresii/keyword-uri.
+
+Asta înseamnă:
+
+poate avea fals pozitive
+Exemplu: cineva scrie „am citit o știre despre suicid” fără să fie în pericol.
+poate avea fals negative
+Exemplu: cineva exprimă riscul foarte indirect și sistemul nu îl prinde.
+
+Deci nu trebuie tratat ca sistem perfect.
+
+Este un sistem de triage, nu un diagnostic.
+
+Ce este bine la sistemul ăsta
+
+Pentru proiectul tău, e foarte bun pentru că:
+
+nu lasă povești să apară public fără aprobare
+detectează risc înainte de postare
+salvează snapshot pentru admin
+oferă suport imediat utilizatorului
+separă clar:
+moderarea poveștilor
+alertele de siguranță
+Ce aș îmbunătăți mai târziu
+1. Să nu creeze 20 de alerte identice
+
+Acum, dacă userul scrie același text și rămâne în modal, poate trimite mai multe request-uri.
+
+Soluția:
+
+deduplicare pe user + text similar + interval de timp
+
+De exemplu:
+nu crea altă alertă dacă același user a creat o alertă cu text similar în ultimele 5 minute.
+
+2. Să salveze și storyId, dacă povestea a fost postată
+
+Pentru alertele venite din submit, poți lega:
+
+storyId
+
+ca adminul să ajungă direct la poveste.
+
+3. Să ai severitate mai detaliată
+
+În loc de doar:
+
+medium
+high
+
+poți avea:
+
+emotional_distress
+self_harm_ideation
+imminent_risk
+4. Să ai acțiuni administrative
+
+De exemplu:
+
+marchează ca verificată
+contactează userul
+trimite resurse
+escaladează
+5. Să folosești un model AI de moderare
+
+Keyword-urile sunt utile pentru început, dar un model de clasificare poate înțelege mai bine contextul.
+
+Pe scurt
+
+Sistemul face asta:
+
+User scrie text
+        ↓
+Frontend detectează local
+        ↓
+Afișează warning dacă e cazul
+        ↓
+Trimite draft la backend
+        ↓
+Backend analizează din nou
+        ↓
+Dacă e medium/high, creează SafetyAlert
+        ↓
+Admin vede alerta în /admin/safety-alerts
+        ↓
+Admin marchează alerta ca verificată
+
+Asta înseamnă că adminul nu depinde doar de povești postate. Vede și semnalele detectate în timpul compunerii.
